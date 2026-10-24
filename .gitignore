@@ -1,0 +1,4 @@
+tests/shots/
+src/lines-todo.json
+lexicon/missing.txt
+__pycache__/
