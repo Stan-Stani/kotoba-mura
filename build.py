@@ -24,6 +24,10 @@ def strings(src):
 texts=[]
 for p in [*chs,root/'src/village.js',root/'src/kit.js']:
     texts+=strings(re.sub(r"const DICT=\{.*?\n\};","",p.read_text(encoding='utf-8'),flags=re.S))  # the word help shows DICT as it is
+# a question's line once answered (its blank filled with the right answer) is shown too: split it as well
+for p in chs:
+    for m in re.finditer(r"ask:'([^']*___[^']*)',opts:\[\['([^']*)',1\]",p.read_text(encoding='utf-8')):
+        texts.append(m.group(1).replace('___',m.group(2),1))
 texts=list(dict.fromkeys(texts))
 
 # ---------- split into words ----------
@@ -62,7 +66,7 @@ def split(t):
         t_['open']=any(j.startswith(t_['w']) and j!=t_['w'] for j in JOIN);res.append(t_)
     seg=[]
     for t_ in res:
-        if t_['ws']:seg.append([t_['ws'],'',''])  # the spaces between words (MeCab keeps them apart from the words)
+        if t_['ws']:seg.append(['\u00a0' if not JP.search(t_['w']) and not re.search(r'\w',t_['w']) else t_['ws'],'',''])  # an emoji or mark after a space keeps to its line  # the spaces between words (MeCab keeps them apart from the words)
         punct=t_['pos'] in ('補助記号','空白','記号') or not JP.search(t_['w'])
         form='' if punct else FORM.get(t_['w'],t_['base'])
         seg.append([t_['w'],READ.get(t_['w']) or t_['r'] if JP.search(t_['w']) and re.search(r'[一-龯々]',t_['w']) else '',form])
