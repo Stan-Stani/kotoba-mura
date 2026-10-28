@@ -726,7 +726,7 @@ var GAME={prefix:'kotoba-mura',title:'ことばのむら',log:'ことばのむ�
   '아직 찾아본 말이 없어요.':'まだ しらべた ことばが ありません。','복사':'コピー','문장':'ぶん','새로 보낼 게 없어요.':'あたらしく おくる ものは ありません。','Anki에 못 넣었어요.':'Anki に いれられませんでした。','문법':'ぶんぽう','아는 말':'しってる ことば','보내기':'おくる','보냈어요!':'おくりました！','물어보기':'きく','저장 옮기기':'セーブを うつす','저장했어요':'ほぞんしました','저장하지 못했어요.':'ほぞん できませんでした。','저장 파일이 아니에요.':'セーブの ファイルでは ありません。','닫기':'とじる','내보내기':'かきだす','가져오기':'よみこむ','저장 글이 아니에요.':'セーブの テキストでは ありません。','한 번 더 누르면 덮어써요':'もう一度 おすと うわがきします','저장할 자리가 모자라요.':'ほぞんする ばしょが たりません。','찾아본 말도 볼까요?':'しらべた ことばも みましょうか。',': 무슨 뜻이에요?':': どういう いみですか。','아직 영어로 본 문장이 없어요.':'まだ えいごで みた ぶんが ありません。','복사했어요!':'コピーしました！','아직 대화가 없어요.':'まだ かいわが ありません。',
   '맞아!':'せいかい！','맞아요!':'せいかい！','다시 해 봐요.':'もう一度 どうぞ。','아니에요. 보기에서 골라 봐요.':'ちがいます。 えらんで ください。',
   '일지에 추가':'バッジ ゲット','아직 단어가 없어요.':'まだ ことばが ありません。','사람들한테 말을 걸면 일지에 단어가 생겨요.':'むらの 人と はなすと、 ことばが ふえます。',
-  '반가워요! 👋':'よろしく！ 👋','고마워요!':'ありがとう！','영어 자막':'えいごの じまく','문제 알리기':'もんだいを しらせる','디버그':'デバッグ','음악':'おんがく',
+  '반가워요! 👋':'よろしく！ 👋','고마워요!':'ありがとう！','영어 자막':'えいごの じまく','문제 알리기':'もんだいを しらせる','디버그':'デバッグ','가로 화면':'よこ がめん','이 브라우저는 화면을 돌릴 수 없어요.':'この ブラウザでは がめんを まわせません。','음악':'おんがく',
   '처음부터':'さいしょから','한 번 더 누르면 지워져요':'もう一度 おすと きえます','이 기기에는 한국어 음성이 없어요.':'この きかいには にほんごの こえが ありません。',
   '대사를 소리 내서 읽어요.':'こえに だして よみます。','읽기를 껐어요.':'よみあげを けしました。','복습에 듣기 문제가 나와요.':'ふくしゅうに ききとり もんだいが でます。',
   '지금 복습할 수 있어요':'いま ふくしゅう できます','다음 복습: ':'つぎの ふくしゅう: ',' 후':' ご','기억 레벨':'きおく レベル',
@@ -756,10 +756,10 @@ var GAME={prefix:'kotoba-mura',title:'ことばのむら',log:'ことばのむ�
 </script>
 <script>
 /* This build (version.json): v = a hash of the game, t = when this version first appeared. */
-globalThis.BUILD={"v": "0c52ff24", "t": "2026-10-28T00:17Z"};
+globalThis.BUILD={"v": "887b945e", "t": "2026-10-28T02:07Z"};
 </script>
 <script>
-/* GENERATED from walk-engine/engine.js (ece8f77) — do not edit here; edit walk-engine and run its sync.sh. */
+/* GENERATED from walk-engine/engine.js (fb52085) — do not edit here; edit walk-engine and run its sync.sh. */
 /* =====================================================================
    Engine: tiles, movement, zones, dialogue, spaced review, speech, saving.
    ===================================================================== */
@@ -2794,6 +2794,24 @@ function openSaves(){
  }
  $('saveMsg').textContent='';p.hidden=false;document.body.classList.add('talkopen');
 }
+/* 가로 화면 (START, phones): fullscreen plus a landscape lock, the only way a page may lock the screen (Android Chrome and Firefox;
+   iPhone Safari can't, and the app's WebView has no fullscreen: it isn't offered there, turning the phone still works). Leaving
+   fullscreen drops the lock; the choice (walk-landscape, every game) comes back with the first tap after the next load. */
+const landOK=matchMedia('(pointer:coarse)').matches&&!!document.documentElement.requestFullscreen&&!!(screen.orientation&&screen.orientation.lock)&&!window.WalkFiles;
+let landOn=false;
+function landLock(){return (document.fullscreenElement?Promise.resolve():document.documentElement.requestFullscreen({navigationUI:'hide'}))
+ .then(()=>screen.orientation.lock('landscape')).then(()=>{landOn=true;store.set('walk-landscape','1');updLand()})}
+const updLand=()=>{const b=$('landBtn');if(b)b.setAttribute('aria-pressed',landOn?'true':'false')};
+if(landOK){const b=document.createElement('button');b.className='mi toggle';b.id='landBtn';b.textContent=T('가로 화면');
+ b.addEventListener('click',()=>{if(landOn){try{screen.orientation.unlock()}catch(e){}landOn=false;store.set('walk-landscape','');updLand();return}
+  landLock().catch(()=>{landOn=false;updLand();toast(T('이 브라우저는 화면을 돌릴 수 없어요.'))})});
+ menuAdd(b);updLand();
+ document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&landOn){landOn=false;updLand()}});
+ if(store.get('walk-landscape')==='1'){const again=()=>{removeEventListener('pointerup',again,true);if(landOn)return;
+  // the first-tap fullscreen above usually asks first (a second request meanwhile is refused): lock once it's in, or ask ourselves
+  let done=false;const go=()=>{if(done)return;done=true;landLock().catch(()=>{})};
+  if(document.fullscreenElement)go();else{document.addEventListener('fullscreenchange',go,{once:true});setTimeout(go,800)}};
+ addEventListener('pointerup',again,true)}}
 {const b=document.createElement('button');b.className='mi';b.id='saveBtn';b.textContent=T('저장 옮기기');b.addEventListener('click',()=>{$('startPanel').hidden=true;openSaves()});menuAdd(b)}
 {const b=document.createElement('button');b.className='mi';b.id='repBtn';b.textContent=T('문제 알리기');b.addEventListener('click',()=>{$('startPanel').hidden=true;openReport()});menuAdd(b)}
 $('startBtn').addEventListener('click',toggleStart);$('startClose').addEventListener('click',()=>$('startPanel').hidden=true);
