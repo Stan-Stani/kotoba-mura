@@ -726,7 +726,7 @@ var GAME={prefix:'kotoba-mura',title:'ことばのむら',log:'ことばのむ�
   '아직 찾아본 말이 없어요.':'まだ しらべた ことばが ありません。','복사':'コピー','문장':'ぶん','새로 보낼 게 없어요.':'あたらしく おくる ものは ありません。','Anki에 못 넣었어요.':'Anki に いれられませんでした。','문법':'ぶんぽう','아는 말':'しってる ことば','보내기':'おくる','보냈어요!':'おくりました！','물어보기':'きく','저장 옮기기':'セーブを うつす','저장했어요':'ほぞんしました','저장하지 못했어요.':'ほぞん できませんでした。','저장 파일이 아니에요.':'セーブの ファイルでは ありません。','닫기':'とじる','내보내기':'かきだす','가져오기':'よみこむ','저장 글이 아니에요.':'セーブの テキストでは ありません。','한 번 더 누르면 덮어써요':'もう一度 おすと うわがきします','저장할 자리가 모자라요.':'ほぞんする ばしょが たりません。','찾아본 말도 볼까요?':'しらべた ことばも みましょうか。',': 무슨 뜻이에요?':': どういう いみですか。','아직 영어로 본 문장이 없어요.':'まだ えいごで みた ぶんが ありません。','복사했어요!':'コピーしました！','아직 대화가 없어요.':'まだ かいわが ありません。',
   '맞아!':'せいかい！','맞아요!':'せいかい！','다시 해 봐요.':'もう一度 どうぞ。','아니에요. 보기에서 골라 봐요.':'ちがいます。 えらんで ください。',
   '일지에 추가':'バッジ ゲット','아직 단어가 없어요.':'まだ ことばが ありません。','사람들한테 말을 걸면 일지에 단어가 생겨요.':'むらの 人と はなすと、 ことばが ふえます。',
-  '반가워요! 👋':'よろしく！ 👋','고마워요!':'ありがとう！','영어 자막':'えいごの じまく','문제 알리기':'もんだいを しらせる','디버그':'デバッグ','다시 보기':'もう一度','그대로 보기':'そのまま つづける','보통':'ふつう','듣기':'きく','뒤로':'もどる','지금까지 한 건 그대로예요.':'いままでの きろくは そのままです。','가로 화면':'よこ がめん','이 브라우저는 화면을 돌릴 수 없어요.':'この ブラウザでは がめんを まわせません。','음악':'おんがく',
+  '반가워요! 👋':'よろしく！ 👋','고마워요!':'ありがとう！','영어 자막':'えいごの じまく','문제 알리기':'もんだいを しらせる','디버그':'デバッグ','다시 보기':'もう一度','그대로 보기':'そのまま つづける','장면 고르기':'ばめんを えらぶ','장면이 아직 없어요.':'ばめんは まだ ありません。','보통':'ふつう','듣기':'きく','뒤로':'もどる','지금까지 한 건 그대로예요.':'いままでの きろくは そのままです。','가로 화면':'よこ がめん','이 브라우저는 화면을 돌릴 수 없어요.':'この ブラウザでは がめんを まわせません。','음악':'おんがく',
   '처음부터':'さいしょから','한 번 더 누르면 지워져요':'もう一度 おすと きえます','이 기기에는 한국어 음성이 없어요.':'この きかいには にほんごの こえが ありません。',
   '대사를 소리 내서 읽어요.':'こえに だして よみます。','읽기를 껐어요.':'よみあげを けしました。','복습에 듣기 문제가 나와요.':'ふくしゅうに ききとり もんだいが でます。',
   '지금 복습할 수 있어요':'いま ふくしゅう できます','다음 복습: ':'つぎの ふくしゅう: ',' 후':' ご','기억 레벨':'きおく レベル',
@@ -756,10 +756,10 @@ var GAME={prefix:'kotoba-mura',title:'ことばのむら',log:'ことばのむ�
 </script>
 <script>
 /* This build (version.json): v = a hash of the game, t = when this version first appeared. */
-globalThis.BUILD={"v": "b97f1cbc", "t": "2026-10-28T03:14Z"};
+globalThis.BUILD={"v": "7d626d55", "t": "2026-10-28T20:21Z"};
 </script>
 <script>
-/* GENERATED from walk-engine/engine.js (62f05b5) — do not edit here; edit walk-engine and run its sync.sh. */
+/* GENERATED from walk-engine/engine.js (d76294c) — do not edit here; edit walk-engine and run its sync.sh. */
 /* =====================================================================
    Engine: tiles, movement, zones, dialogue, spaced review, speech, saving.
    ===================================================================== */
@@ -2865,8 +2865,9 @@ function skipTalk(){
 (()=>{const grid=document.querySelector('#startPanel .mgrid');if(!grid)return;
  if(debugOK){const b=document.createElement('button');b.className='mi toggle';b.id='dbgBtn';b.setAttribute('aria-pressed','false');b.textContent=T('디버그');menuAdd(b)}
  $('spk').insertAdjacentHTML('beforebegin','<button class="spk" id="skipBtn" type="button" hidden style="width:auto;padding:0 8px;margin-left:auto;margin-right:6px;font-size:.8rem;font-weight:700">건너뛰기</button>');
- $('resetBtn').insertAdjacentHTML('beforebegin','<button class="btn" id="backBtn" type="button" hidden>한 단계 뒤로</button>');
- const upd=()=>{$('dbgBtn')?.setAttribute('aria-pressed',debugOn?'true':'false');$('skipBtn').hidden=!debugOn;updBack()};upd();
+ $('resetBtn').insertAdjacentHTML('beforebegin','<button class="btn" id="sceneBtn" type="button" hidden>장면으로</button><button class="btn" id="backBtn" type="button" hidden>한 단계 뒤로</button>');
+ const upd=()=>{$('dbgBtn')?.setAttribute('aria-pressed',debugOn?'true':'false');$('skipBtn').hidden=!debugOn;$('sceneBtn').hidden=!debugOn;updBack()};upd();
+ $('sceneBtn').addEventListener('click',()=>{$('panel').hidden=true;sceneMenu(CH,true)});  // debug: any chapter's moments, in the replay save
  $('dbgBtn')?.addEventListener('click',()=>{debugOn=!debugOn;store.set(KEY('debug'),debugOn?'1':'0');upd();sfx('ok');toast(debugOn?'디버그: 대화에 건너뛰기 버튼':'디버그 꺼짐')});
  $('skipBtn').addEventListener('click',e=>{e.stopPropagation();skipTalk()});
  $('backBtn').addEventListener('click',stepBack);
@@ -2947,7 +2948,8 @@ const BASE_TILES={...TILES};
 function boot(id,rp){
  CH=CHAPTERS.find(c=>c.id===id)||CHAPTERS[0];
  if(RP&&!rp)try{shared=JSON.parse(store.get(SHARED_KEY)||'{}')||{}}catch(e){shared={}}  // leaving a replay: the real shared record again
- RP=rp&&chapterProgress(CH).done?{mode:rp.mode||'plain'}:null;store.set(KEY('replay'),RP?JSON.stringify({id:CH.id,mode:RP.mode}):'');
+ RP=rp&&(chapterProgress(CH).done||(rp.force&&debugOK))?{mode:rp.mode||'plain',force:!!rp.force}:null;store.set(KEY('replay'),RP?JSON.stringify({id:CH.id,mode:RP.mode,force:RP.force}):'');
+ if(RP&&rp.at){store.set(SK(),JSON.stringify(rp.at.state));store.set(SK()+'-talk',JSON.stringify(rp.at.talk||[]));store.set(SK()+'~back','[]')}  // 장면: that moment, in the replay save
  if(RP&&RP.mode==='listen'&&!canSpeak()){RP.mode='plain';setTimeout(()=>toast(T('이 기기에는 한국어 음성이 없어요.')),600)}
  C=CH.make();mergeLooks();
  Object.keys(TILES).forEach(k=>{if(!(k in BASE_TILES))delete TILES[k]});Object.assign(TILES,C.TILES||{});
@@ -2961,7 +2963,7 @@ function boot(id,rp){
  if(G.onBoot)G.onBoot(CH,C);  // the game's own page parts for this chapter (단어 마을: tips, news sources)
  if(!state.seenIntro){state.seenIntro=true;state.steps=[];save();if(!RP){countPlay('start');countStep()}const intro=()=>setTimeout(()=>openDialog(CH.introWho||G.title||T('이야기'),C.INTRO),300);if(me||!CREATOR)intro();else openMe(intro)}  // first time ever: make your character first
  else setTimeout(()=>{if(!dlg&&!panelOpen())greet()},400);  // loaded in a room whose greeting hasn't happened (reloaded mid-scene): it starts over
- if(RP)setTimeout(()=>toast(T('다시 보기')+' · '+T(RP_MODES[RP.mode])+': '+T('지금까지 한 건 그대로예요.')),700);
+ if(RP){const m=RP.mode;setTimeout(()=>toast(T('다시 보기')+' · '+T(RP_MODES[m])+': '+T('지금까지 한 건 그대로예요.')),700)}  // the mode now: it may have ended by then
 }
 const RP_MODES={plain:'보통',listen:'듣기'};
 function chapterProgress(c){try{const s=JSON.parse(store.get(c.save)||'null');return s?{got:(s.badges||[]).length,done:!!(s.f&&s.f.done)}:{got:0,done:false}}catch(e){return {got:0,done:false}}}
@@ -2974,13 +2976,31 @@ function openChapters(){
  $('chPanel').hidden=false;$('chList').querySelector('.cur')?.focus();
 }
 function replayMenu(c){  // 그대로 보기 = the real save; 다시 보기 = a fresh run in its own save, in one of three modes
- const opts=[['',T('그대로 보기')],...Object.entries(RP_MODES).filter(([m])=>m!=='listen'||canSpeak()).map(([m,l])=>[m,T('다시 보기')+' · '+T(l)])];
+ const opts=[['',T('그대로 보기')],...Object.entries(RP_MODES).filter(([m])=>m!=='listen'||canSpeak()).map(([m,l])=>[m,T('다시 보기')+' · '+T(l)]),['scenes',T('장면 고르기')]];
  $('chList').innerHTML=`<div class="chap cur" style="cursor:default"><span class="cn" style="background:${c.color}">${c.n}</span><span class="ci"><b>${c.title}</b><small>${T('지금까지 한 건 그대로예요.')}</small></span></div>`
   +opts.map(([m,l])=>`<button class="mi rpo" data-m="${m}" style="width:100%;margin-top:6px">${l}</button>`).join('')
   +`<button class="mi rpo" data-m="back" style="width:100%;margin-top:6px">${T('뒤로')}</button>`;
  $('chList').querySelectorAll('.rpo').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.m;if(m==='back'){openChapters();return}
+  if(m==='scenes'){sceneMenu(c,false);return}
   $('chPanel').hidden=true;const want=m?{mode:m}:null;if(c.id!==CH.id||!!RP!==!!want||(RP&&want&&RP.mode!==want.mode)){boot(c.id,want);sfx('door')}}));
  $('chList').querySelector('.rpo')?.focus();
+}
+/* 장면: checkpoints.json next to the game (tools/play.mjs --checkpoints writes it from the walk scripts): per chapter, the moments the
+   목표 changed with no talk open: [{q: the 목표, zone, state, talk}]. A finished chapter's 장면 고르기 starts 다시 보기 at one of them;
+   with 디버그 on, 장면으로 (in the 일지) does it in any chapter, so a story beat can be tried without playing up to it. */
+let cpAll=null;const loadCps=()=>cpAll||(cpAll=fetch('checkpoints.json',{cache:'no-cache'}).then(r=>r.ok?r.json():{}).catch(()=>({})));
+let sceneListen=false;
+function sceneMenu(c,force){
+ loadCps().then(all=>{const L=(all||{})[c.id]||[];
+  if(L.length<2){toast(T('장면이 아직 없어요.'));return}  // one moment is just the start
+  const esc=x=>String(x).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  $('chList').innerHTML=(canSpeak()?`<button class="mi toggle" id="scListen" aria-pressed="${sceneListen}" style="width:100%;margin-bottom:6px">${T('듣기')}</button>`:'')
+   +L.map((x,i)=>`<button class="mi rpo" data-i="${i}" style="width:100%;margin-top:6px;text-align:left;white-space:normal">${i+1}. ${esc(x.q)}</button>`).join('')
+   +`<button class="mi rpo" data-i="back" style="width:100%;margin-top:6px">${T('뒤로')}</button>`;
+  $('scListen')?.addEventListener('click',()=>{sceneListen=!sceneListen;$('scListen').setAttribute('aria-pressed',String(sceneListen))});
+  $('chList').querySelectorAll('.rpo').forEach(b=>b.addEventListener('click',()=>{const i=b.dataset.i;if(i==='back'){force?($('chPanel').hidden=true):replayMenu(c);return}
+   $('chPanel').hidden=true;boot(c.id,{mode:sceneListen&&canSpeak()?'listen':'plain',at:L[+i],force});sfx('door')}));
+  $('chPanel').hidden=false;$('chList').querySelector('.rpo')?.focus()});
 }
 $('chBtn').addEventListener('click',openChapters);
 $('chPanel').addEventListener('click',e=>{if(e.target.id==='chPanel')$('chPanel').hidden=true});
